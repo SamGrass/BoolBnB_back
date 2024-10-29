@@ -1,108 +1,105 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Inserisci i dati per il nuovo appartamento</h1>
+<h1>Inserisci i dati per il nuovo appartamento</h1>
 
-    @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+@if ($errors->any())
+<div class="alert alert-danger" role="alert">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+<form action="{{ route('admin.apartments.store') }}" method="POST" enctype="multipart/form-data" id="apartmentForm">
+    @csrf
+
+    <div class="mb-3">
+        <label for="title" class="form-label">Titolo annuncio</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required>
+        <small class="text-danger" id="titleError" style="display: none;"></small>
+    </div>
+
+    <div class="d-flex gap-3 mb-3">
+        <div>
+            <label for="rooms" class="form-label">N. Camere</label>
+            <input type="number" class="form-control" id="rooms" name="rooms" value="{{ old('rooms') }}" required>
+            <small class="text-danger" id="roomsError" style="display: none;"></small>
         </div>
-    @endif
-
-    <form action="{{ route('admin.apartments.store') }}" method="POST" enctype="multipart/form-data" id="apartmentForm">
-        @csrf
-
-        <div class="mb-3">
-            <label for="title" class="form-label">Titolo annuncio</label>
-            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required>
-            <small class="text-danger" id="titleError" style="display: none;"></small>
+        <div>
+            <label for="beds" class="form-label">N. Letti</label>
+            <input type="number" class="form-control" id="beds" name="beds" value="{{ old('beds') }}" required>
+            <small class="text-danger" id="bedsError" style="display: none;"></small>
         </div>
-
-        <div class="d-flex gap-3 mb-3">
-            <div>
-                <label for="rooms" class="form-label">N. Camere</label>
-                <input type="number" class="form-control" id="rooms" name="rooms" value="{{ old('rooms') }}"
-                    required>
-                <small class="text-danger" id="roomsError" style="display: none;"></small>
-            </div>
-            <div>
-                <label for="beds" class="form-label">N. Letti</label>
-                <input type="number" class="form-control" id="beds" name="beds" value="{{ old('beds') }}"
-                    required>
-                <small class="text-danger" id="bedsError" style="display: none;"></small>
-            </div>
-            <div>
-                <label for="bathrooms" class="form-label">N. Bagni</label>
-                <input type="number" class="form-control" id="bathrooms" name="bathrooms" value="{{ old('bathrooms') }}"
-                    required>
-                <small class="text-danger" id="bathroomsError" style="display: none;"></small>
-            </div>
-            <div>
-                <label for="mq" class="form-label">Metri Quadri</label>
-                <input type="number" class="form-control" id="mq" name="mq" value="{{ old('mq') }}"
-                    required>
-                <small class="text-danger" id="mqError" style="display: none;"></small>
-            </div>
+        <div>
+            <label for="bathrooms" class="form-label">N. Bagni</label>
+            <input type="number" class="form-control" id="bathrooms" name="bathrooms" value="{{ old('bathrooms') }}"
+                required>
+            <small class="text-danger" id="bathroomsError" style="display: none;"></small>
         </div>
-
-        {{-- searchbox --}}
-        <div id="search-box-container" class="mb-3"></div>
-
-        <div class="btn-group mb-3" role="group" aria-label="Basic checkbox toggle button group">
-            @foreach ($services as $service)
-                <input name="services[]" type="checkbox" value="{{ $service->id }}" class="btn-check"
-                    id="service-{{ $service->id }}" autocomplete="off" @if (in_array($service->id, old('services', []))) checked @endif>
-                <label class="btn btn-outline-primary" for="service-{{ $service->id }}">{{ $service->name }}</label>
-            @endforeach
-            <small class="text-danger" id="servicesError" style="display: none;"></small>
+        <div>
+            <label for="mq" class="form-label">Metri Quadri</label>
+            <input type="number" class="form-control" id="mq" name="mq" value="{{ old('mq') }}" required>
+            <small class="text-danger" id="mqError" style="display: none;"></small>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label for="images" class="form-label">Inserisci l'immagine (Puoi caricare solo file JPG, JPEG, PNG,
-                WEBP)</label>
-            <input class="form-control" type="file" id="images" name="images[]" multiple required accept="image/*">
-            @error('images')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-            <small class="text-primary" id="imagesCount" style="display: block;">Inserisci da 1 a 3 file massimi.</small>
-            <small class="text-danger" id="imagesError" style="display: none;"></small>
+    {{-- searchbox --}}
+    <div id="search-box-container" class="mb-3"></div>
+
+    <div class="btn-group mb-3" role="group" aria-label="Basic checkbox toggle button group">
+        @foreach ($services as $service)
+        <input name="services[]" type="checkbox" value="{{ $service->id }}" class="btn-check"
+            id="service-{{ $service->id }}" autocomplete="off" @if (in_array($service->id, old('services', []))) checked
+        @endif>
+        <label class="btn btn-outline-primary" for="service-{{ $service->id }}">{{ $service->name }}</label>
+        @endforeach
+        <small class="text-danger" id="servicesError" style="display: none;"></small>
+    </div>
+
+    <div class="mb-3">
+        <label for="images" class="form-label">Inserisci l'immagine (Puoi caricare solo file JPG, JPEG, PNG,
+            WEBP)</label>
+        <input class="form-control" type="file" id="images" name="images[]" multiple required accept="image/*">
+        @error('images')
+        <small class="text-danger">{{ $message }}</small>
+        @enderror
+        <small class="text-primary" id="imagesCount" style="display: block;">Inserisci da 1 a 3 file massimi.</small>
+        <small class="text-danger" id="imagesError" style="display: none;"></small>
+    </div>
+
+    <div class="is-visible-radios mb-3">
+        <div>Visibile</div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="is_visible" value="1" id="flexRadioDefault1" checked>
+            <label class="form-check-label" for="flexRadioDefault1">Si</label>
         </div>
-
-        <div class="is-visible-radios mb-3">
-            <div>Visibile</div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_visible" value="1" id="flexRadioDefault1"
-                    checked>
-                <label class="form-check-label" for="flexRadioDefault1">Si</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_visible" value="0" id="flexRadioDefault2">
-                <label class="form-check-label" for="flexRadioDefault2">No</label>
-            </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="is_visible" value="0" id="flexRadioDefault2">
+            <label class="form-check-label" for="flexRadioDefault2">No</label>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <input type="submit" class="btn btn-primary" value="Invia">
-            <input type="reset" class="btn btn-danger" value="Annulla">
-        </div>
-    </form>
+    <div class="mb-3">
+        <input type="submit" class="btn btn-primary" value="Invia">
+        <input type="reset" class="btn btn-danger" value="Annulla">
+    </div>
+</form>
 
-    <style>
-        .is-valid {
-            border-color: green;
-        }
+<style>
+    .is-valid {
+        border-color: green;
+    }
 
-        .is-invalid {
-            border-color: red;
-        }
-    </style>
+    .is-invalid {
+        border-color: red;
+    }
+</style>
 
-    <script>
-        // SEZIONE DELLA SEARCHBOX
+<script>
+    // SEZIONE DELLA SEARCHBOX
         const apiKey = "{{ config('app.tomtomapikey') }}";
         let options = {
             searchOptions: {
@@ -167,6 +164,8 @@
             document.getElementById('title').addEventListener('input', function() {
                 if (this.value.trim() === '') {
                     showError('title', 'Il titolo è obbligatorio.');
+                } else if (this.value > 255) {
+                    showError('title', 'Il titolo puo\' avere massimo 255 caratteri')
                 } else {
                     hideError('title');
                 }
@@ -175,6 +174,8 @@
             document.getElementById('rooms').addEventListener('input', function() {
                 if (this.value <= 0) {
                     showError('rooms', 'Devi inserire un numero valido di camere.');
+                } else if (this.value > 100) {
+                    showError('rooms', 'Puoi inserire al massimo 100 camere')
                 } else {
                     hideError('rooms');
                 }
@@ -183,6 +184,8 @@
             document.getElementById('beds').addEventListener('input', function() {
                 if (this.value <= 0) {
                     showError('beds', 'Devi inserire un numero valido di letti.');
+                } else if (this.value > 100) {
+                    showError('beds', 'Puoi inserire al massimo 100 posti letto')
                 } else {
                     hideError('beds');
                 }
@@ -191,6 +194,8 @@
             document.getElementById('bathrooms').addEventListener('input', function() {
                 if (this.value <= 0) {
                     showError('bathrooms', 'Devi inserire un numero valido di bagni.');
+                } else if (this.value > 100) {
+                    showError('bathrooms', 'Puoi inserire al massimo 100 bagni')
                 } else {
                     hideError('bathrooms');
                 }
@@ -199,8 +204,8 @@
             document.getElementById('mq').addEventListener('input', function() {
                 if (this.value < 30) {
                     showError('mq', 'Devi inserire almeno 30 metri quadri.');
-                } else if (this.value <= 0) {
-                    showError('mq', 'Devi inserire un numero valido di metri quadri.');
+                } else if (this.value > 2000) {
+                    showError('mq', 'Puoi inserire un massimo di 2000 metri quadri');
                 } else {
                     hideError('mq');
                 }
@@ -225,6 +230,7 @@
                     document.getElementById('imagesCount').textContent = "Inserisci da 1 a 3 file massimi.";
                 } else if (fileCount > maxFiles) {
                     showError('images', `Puoi caricare al massimo ${maxFiles} immagini.`);
+                    this.value = '';
                 } else if (fileCount === maxFiles) {
                     document.getElementById('imagesCount').textContent =
                         `Hai inserito ${fileCount}/${maxFiles} file.`;
@@ -280,5 +286,5 @@
                 }
             });
         });
-    </script>
+</script>
 @endsection
