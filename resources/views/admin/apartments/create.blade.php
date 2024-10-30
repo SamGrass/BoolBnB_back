@@ -103,7 +103,7 @@
 
     <script>
         // SEZIONE DELLA SEARCHBOX
-        const apiKey = "{{ config('app.tomtomApiKey') }}";
+        const apiKey = "{{ config('app.tomtomapikey') }}";
         let options = {
             searchOptions: {
                 key: apiKey,
@@ -253,12 +253,6 @@
                         showError('images', 'Puoi caricare solo file JPG, JPEG, PNG, WEBP.');
                         valid = false;
                         break;
-                    }
-
-                    if (!uploadFile(files[i])) {
-                        showError('images', 'L\'immagine ' + (i + 1) +
-                            ' non è riuscita a essere caricata.');
-                        valid = false;
                     }
                 }
 
